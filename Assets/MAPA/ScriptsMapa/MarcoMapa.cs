@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MarcoMapa : MonoBehaviour
 {
 
-    public Vector2 tamanno = new Vector2(6, 6);
+    public Vector2 tamanno = new Vector2();
     public Color color = Color.white;
 
     // Start is called before the first frame update
