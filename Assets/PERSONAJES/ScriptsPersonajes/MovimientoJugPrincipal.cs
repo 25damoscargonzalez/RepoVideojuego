@@ -128,25 +128,6 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     }
 
-    void AtacandoRoll()
-    {
-        if (Input.GetKeyDown(KeyCode.C) && enSuelo && movimiento.x != 0 && !atacandoRoll)
-        {
-            atacandoRoll = true;
-            dirRoll = movimiento.x > 0 ? 1 : -1;
-            xInicioRoll = transform.position.x;
-        }
-
-        if (atacandoRoll)
-        {
-            float recorrido = Mathf.Abs(transform.position.x - xInicioRoll);
-            if (recorrido >= recorridoRoll)
-            {
-                atacandoRoll = false;
-            }
-        }
-    }
-
     void Deslizando()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift) && enSuelo && !deslizando)
