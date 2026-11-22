@@ -10,7 +10,7 @@ public class Puerta : MonoBehaviour
     public GameObject camaraZona;         // Virtual Camera de la zona donde está esta puerta
 
     [Header("Opcional")]
-    public GameObject aviso;              // texto "Pulsa W"
+    public GameObject aviso;              // texto "W"
 
     Transform jugador;
 

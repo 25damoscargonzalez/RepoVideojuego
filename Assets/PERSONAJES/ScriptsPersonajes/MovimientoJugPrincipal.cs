@@ -12,6 +12,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     Rigidbody2D cuerpo;
     SpriteRenderer sprite;
     Animator anim;
+    float direccion = 1;   // 1 = derecha, -1 = izquierda
 
     // LeerSalto()
     bool saltando;
@@ -30,9 +31,19 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     // Deslizando()
     public float duracionDeslizando = 0.4f;
+    public float fuerzaDeslizando = 10f;
 
     float tiempoDeslizando;
     bool deslizando;
+
+    // Morir()
+    public Transform puntoReaparicion;    
+    public GameObject camaraMapa;          
+    public GameObject camaraHabitacion;   
+    public float duracionMuerte = 1f;
+
+    float tiempoMuerte;
+    bool muerto;
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +57,18 @@ public class MovimientoJugPrincipal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (muerto)
+        {
+            tiempoMuerte -= Time.deltaTime;
+            if (tiempoMuerte <= 0)
+            {
+                Reaparecer();
+            }
+
+            ActualizarAnim();
+            return;
+        }
+
         enSuelo = EstaEnElSuelo();
 
         LeerMovimiento();
@@ -77,12 +100,15 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     private void RotarPersonaje()
     {
-        if(movimiento.x < 0)
+        if (movimiento.x < 0)
         {
             sprite.flipX = true;
-        } else if (movimiento.x > 0)
+            direccion = -1;
+        }
+        else if (movimiento.x > 0)
         {
             sprite.flipX = false;
+            direccion = 1;
         }
     }
 
@@ -146,17 +172,43 @@ public class MovimientoJugPrincipal : MonoBehaviour
         }
     }
 
+    public void Morir()
+    {
+        if (muerto) return;
+        muerto = true;
+        tiempoMuerte = duracionMuerte;
+        movimiento = Vector3.zero;
+        cuerpo.velocity = Vector2.zero;
+        anim.SetBool("Muerto", true);
+    }
+
+    void Reaparecer()
+    {
+        transform.position = puntoReaparicion.position;
+        cuerpo.velocity = Vector2.zero;
+
+        camaraMapa.SetActive(false);
+        camaraHabitacion.SetActive(true);
+
+        atacando = false;
+        atacandoAire = false;
+        deslizando = false;
+
+        anim.SetBool("Muerto", false);
+        muerto = false;
+    }
+
     bool EstaEnElSuelo()
     {
         RaycastHit2D rc = Physics2D.BoxCast(transform.position, tamannoCaja, 0, Vector2.down, distCaja, capaSuelo);
         if (rc) 
         {
-            Debug.Log("Suelo");
+            //Debug.Log("Suelo");
             return true;
         }
         else
         {
-            Debug.Log("No toca el sueloooooooooo");
+            //Debug.Log("No toca el sueloooooooooo");
             return false;
         }
     }
@@ -186,6 +238,8 @@ public class MovimientoJugPrincipal : MonoBehaviour
         anim.SetBool("AtacandoAire", atacandoAire);
 
         anim.SetBool("Deslizando", deslizando);
+
+        anim.SetBool("Muerto", muerto);
     }
 
     void FixedUpdate() //Todo el codigo relacionado con las fisicas
@@ -201,6 +255,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
         if (atacandoAire)
         {
             cuerpo.velocity = new Vector2(cuerpo.velocity.x, -fuerzaCaida);
+        }
+
+        if (deslizando)
+        {
+            cuerpo.velocity = new Vector2(direccion * fuerzaDeslizando, cuerpo.velocity.y);
         }
 
     }
