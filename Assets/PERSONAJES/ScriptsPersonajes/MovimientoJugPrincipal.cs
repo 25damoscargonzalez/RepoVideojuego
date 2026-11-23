@@ -122,14 +122,12 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     void AtacandoNormal()
     {
-        // Empieza el ataque: solo en el suelo, y si no está ya atacando
         if (Input.GetMouseButtonDown(0) && enSuelo && !atacando)
         {
             atacando = true;
             tiempoAtaque = duracionAtaque;
         }
 
-        // Cuenta atrás: cuando termina el golpe, se apaga
         if (atacando)
         {
             tiempoAtaque -= Time.deltaTime;
@@ -245,6 +243,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     void FixedUpdate() //Todo el codigo relacionado con las fisicas
     {
         cuerpo.velocity = new Vector2(movimiento.x * velocidad, cuerpo.velocity.y);
+        
         if (saltando)
         {
             cuerpo.AddForce(Vector2.up * fuerzaSalto);
