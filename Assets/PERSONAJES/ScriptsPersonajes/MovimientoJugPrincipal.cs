@@ -8,7 +8,10 @@ public class MovimientoJugPrincipal : MonoBehaviour
     public Vector2 tamannoCaja;
     public LayerMask capaSuelo;
 
+    //LeerMovimiento
+    [Header("LeerMovimiento")]
     Vector3 movimiento;
+    bool moviendose;
     Rigidbody2D cuerpo;
     SpriteRenderer sprite;
     Animator anim;
@@ -18,6 +21,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     bool saltando;
 
     // AtacandoNormal()
+    [Header("AtacandoNormal")]
     public float duracionAtaque = 0.3f;
 
     bool atacando;
@@ -25,11 +29,13 @@ public class MovimientoJugPrincipal : MonoBehaviour
     bool enSuelo;
 
     // AtacandoPorAire()
+    [Header("AtacandoPorAire")]
     public float fuerzaCaida = 10f;  
 
     bool atacandoAire;
 
     // Deslizando()
+    [Header("Deslizando")]
     public float duracionDeslizando = 0.4f;
     public float fuerzaDeslizando = 10f;
 
@@ -37,6 +43,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     bool deslizando;
 
     // Morir()
+    [Header("Morir")]
     public Transform puntoReaparicion;    
     public GameObject camaraMapa;          
     public GameObject camaraHabitacion;   
@@ -87,14 +94,17 @@ public class MovimientoJugPrincipal : MonoBehaviour
         if(Input.GetKey(KeyCode.A))
         {
             movimiento = Vector3.left;
+            moviendose = true;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             movimiento = Vector3.right;
+            moviendose = true;
         }
         else
         {
             movimiento = new Vector3(); //Se para al soltar las teclas
+            moviendose = false;
         }
     }
 
@@ -154,7 +164,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     void Deslizando()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && enSuelo && !deslizando)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && enSuelo && moviendose && !deslizando)
         {
             deslizando = true;
             tiempoDeslizando = duracionDeslizando;   
