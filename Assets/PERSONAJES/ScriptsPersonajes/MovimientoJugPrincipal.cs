@@ -8,6 +8,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
     public Vector2 tamannoCaja;
     public LayerMask capaSuelo;
 
+    // Vida
+    [Header("Vida")]
+    public int vidaMaxima = 3;
+    int vidaActual;
+
     //LeerMovimiento
     [Header("LeerMovimiento")]
     Vector3 movimiento;
@@ -23,6 +28,9 @@ public class MovimientoJugPrincipal : MonoBehaviour
     // AtacandoNormal()
     [Header("AtacandoNormal")]
     public float duracionAtaque = 0.3f;
+    public float distCajaAtaque = 0.8f;
+    public Vector2 tamannoCajaAtaque = new Vector2(1.2f, 1.2f);
+    public LayerMask capaEnemigos;
 
     bool atacando;
     float tiempoAtaque;
@@ -30,7 +38,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     // AtacandoPorAire()
     [Header("AtacandoPorAire")]
-    public float fuerzaCaida = 10f;  
+    public float fuerzaCaida = 10f;
 
     bool atacandoAire;
 
@@ -44,9 +52,9 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     // Morir()
     [Header("Morir")]
-    public Transform puntoReaparicion;    
-    public GameObject camaraMapa;          
-    public GameObject camaraHabitacion;   
+    public Transform puntoReaparicion;
+    public GameObject camaraMapa;
+    public GameObject camaraHabitacion;
     public float duracionMuerte = 1f;
 
     float tiempoMuerte;
@@ -59,6 +67,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
         cuerpo = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        vidaActual = vidaMaxima;
     }
 
     // Update is called once per frame
@@ -86,12 +95,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
         Deslizando();
 
         ActualizarAnim();
-        
-    }
 
+    }
     private void LeerMovimiento()
     {
-        if(Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             movimiento = Vector3.left;
             moviendose = true;
@@ -136,6 +144,18 @@ public class MovimientoJugPrincipal : MonoBehaviour
         {
             atacando = true;
             tiempoAtaque = duracionAtaque;
+
+            Vector2 centro = transform.position + Vector3.right * direccion * distCajaAtaque;
+            Collider2D[] enemigosGolpeados = Physics2D.OverlapBoxAll(centro, tamannoCajaAtaque, 0, capaEnemigos);
+
+            foreach (Collider2D enemigo in enemigosGolpeados)
+            {
+                MovimientoEnemigo scriptEnemigo = enemigo.GetComponent<MovimientoEnemigo>();
+                if (scriptEnemigo != null)
+                {
+                    scriptEnemigo.RecibirDano(1);
+                }
+            }
         }
 
         if (atacando)
@@ -147,6 +167,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
             }
         }
     }
+
 
     void AtacandoPorAire()
     {
@@ -167,7 +188,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift) && enSuelo && moviendose && !deslizando)
         {
             deslizando = true;
-            tiempoDeslizando = duracionDeslizando;   
+            tiempoDeslizando = duracionDeslizando;
         }
 
         if (deslizando)
@@ -177,6 +198,18 @@ public class MovimientoJugPrincipal : MonoBehaviour
             {
                 deslizando = false;
             }
+        }
+    }
+
+    public void RecibirDano(int cantidad)
+    {
+        if (muerto) return;
+        vidaActual -= cantidad;
+        Debug.Log("Vidas restantes = " + vidaActual);
+
+        if (vidaActual <= 0)
+        {
+            Morir();
         }
     }
 
@@ -201,6 +234,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
         atacando = false;
         atacandoAire = false;
         deslizando = false;
+        vidaActual = vidaMaxima;
 
         anim.SetBool("Muerto", false);
         muerto = false;
@@ -209,7 +243,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     bool EstaEnElSuelo()
     {
         RaycastHit2D rc = Physics2D.BoxCast(transform.position, tamannoCaja, 0, Vector2.down, distCaja, capaSuelo);
-        if (rc) 
+        if (rc)
         {
             //Debug.Log("Suelo");
             return true;
@@ -253,7 +287,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     void FixedUpdate() //Todo el codigo relacionado con las fisicas
     {
         cuerpo.velocity = new Vector2(movimiento.x * velocidad, cuerpo.velocity.y);
-        
+
         if (saltando)
         {
             cuerpo.AddForce(Vector2.up * fuerzaSalto);
@@ -281,6 +315,12 @@ public class MovimientoJugPrincipal : MonoBehaviour
         }
         Gizmos.DrawWireCube(transform.position + Vector3.down * distCaja, tamannoCaja);
         Gizmos.color = Color.white;
+
+        //Gizmo ataqueNormal
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position + Vector3.right * direccion * distCajaAtaque, tamannoCajaAtaque);
+        Gizmos.color = Color.white;
+
     }
 
 }
