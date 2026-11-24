@@ -8,10 +8,16 @@ public class MovimientoJugPrincipal : MonoBehaviour
     public Vector2 tamannoCaja;
     public LayerMask capaSuelo;
 
-    // Vida
+    // Vida y corazones UI
     [Header("Vida")]
     public int vidaMaxima = 3;
+    public GameObject[] corazones;
     int vidaActual;
+
+    // Power-Up Super Salto
+    float fuerzaSaltoOriginal;
+    float tiempoSuperSalto;
+    bool superSaltoActivo;
 
     //LeerMovimiento
     [Header("LeerMovimiento")]
@@ -67,7 +73,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
         cuerpo = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+
         vidaActual = vidaMaxima;
+        ActualizarCorazones();
+
+        fuerzaSaltoOriginal = fuerzaSalto;
     }
 
     // Update is called once per frame
@@ -87,6 +97,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
         enSuelo = EstaEnElSuelo();
 
+        ControlarSuperSalto();
         LeerMovimiento();
         RotarPersonaje();
         LeerSalto();
@@ -97,6 +108,29 @@ public class MovimientoJugPrincipal : MonoBehaviour
         ActualizarAnim();
 
     }
+
+    public void ActivarSuperSalto(float multiplicador, float duracion)
+    {
+        fuerzaSalto = fuerzaSaltoOriginal * multiplicador;
+        tiempoSuperSalto = duracion;
+        superSaltoActivo = true;
+        sprite.color = new Color(0.5f, 0.9f, 1f); 
+    }
+
+    void ControlarSuperSalto()
+    {
+        if (superSaltoActivo)
+        {
+            tiempoSuperSalto -= Time.deltaTime;
+            if (tiempoSuperSalto <= 0)
+            {
+                fuerzaSalto = fuerzaSaltoOriginal;
+                superSaltoActivo = false;
+                sprite.color = Color.white; 
+            }
+        }
+    }
+
     private void LeerMovimiento()
     {
         if (Input.GetKey(KeyCode.A))
@@ -205,11 +239,21 @@ public class MovimientoJugPrincipal : MonoBehaviour
     {
         if (muerto) return;
         vidaActual -= cantidad;
+        ActualizarCorazones();
+
         Debug.Log("Vidas restantes = " + vidaActual);
 
         if (vidaActual <= 0)
         {
             Morir();
+        }
+    }
+
+    void ActualizarCorazones()
+    {
+        for (int i = 0; i < corazones.Length; i++)
+        {
+            corazones[i].SetActive(i < vidaActual);
         }
     }
 
@@ -235,6 +279,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
         atacandoAire = false;
         deslizando = false;
         vidaActual = vidaMaxima;
+        ActualizarCorazones();
 
         anim.SetBool("Muerto", false);
         muerto = false;
@@ -294,7 +339,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
             saltando = false;
         }
 
-        //Ataque aereo: cae mas rapido
+        //Ataque aereo
         if (atacandoAire)
         {
             cuerpo.velocity = new Vector2(cuerpo.velocity.x, -fuerzaCaida);

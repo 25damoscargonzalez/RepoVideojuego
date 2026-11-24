@@ -6,7 +6,11 @@ public class TrampasDia : MonoBehaviour
     {
         if (dentro.CompareTag("Player"))
         {
-            dentro.GetComponent<MovimientoJugPrincipal>().Morir();
+            MovimientoJugPrincipal jugador = dentro.GetComponent<MovimientoJugPrincipal>();
+            if (jugador != null)
+            {
+                jugador.RecibirDano(3);
+            }
         }
     }
 }
