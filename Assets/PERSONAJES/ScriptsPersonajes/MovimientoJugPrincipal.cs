@@ -55,8 +55,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
     // AtacandoPorAire()
     [Header("AtacandoPorAire")]
     public float fuerzaCaida = 10f;
+    public float distCajaAtaqueAire = 0.8f;
+    public Vector2 tamannoCajaAtaqueAire = new Vector2(1.8f, 1f);
 
     bool atacandoAire;
+    bool danoAireAplicado;
 
     // Deslizando()
     [Header("Deslizando")]
@@ -204,12 +207,24 @@ public class MovimientoJugPrincipal : MonoBehaviour
             Vector2 centro = transform.position + Vector3.right * direccion * distCajaAtaque;
             Collider2D[] enemigosGolpeados = Physics2D.OverlapBoxAll(centro, tamannoCajaAtaque, 0, capaEnemigos);
 
-            foreach (Collider2D enemigo in enemigosGolpeados)
+            foreach (Collider2D obj in enemigosGolpeados)
             {
-                MovimientoEnemigo scriptEnemigo = enemigo.GetComponent<MovimientoEnemigo>();
+                MovimientoEnemigo scriptEnemigo = obj.GetComponent<MovimientoEnemigo>();
                 if (scriptEnemigo != null)
                 {
                     scriptEnemigo.RecibirDano(1);
+                }
+
+                CajaRompible scriptCaja = obj.GetComponent<CajaRompible>();
+                if (scriptCaja != null)
+                {
+                    scriptCaja.RomperYReaparecer();
+                }
+
+                PalancaInteractiva scriptPalanca = obj.GetComponent<PalancaInteractiva>();
+                if (scriptPalanca != null)
+                {
+                    scriptPalanca.AlternarPalanca();
                 }
             }
         }
@@ -230,11 +245,32 @@ public class MovimientoJugPrincipal : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F) && !enSuelo && !atacandoAire)
         {
             atacandoAire = true;
+            danoAireAplicado = false;
+        }
+
+        if (atacandoAire && !danoAireAplicado)
+        {
+            Vector2 centro = transform.position + Vector3.down * distCajaAtaqueAire;
+            Collider2D[] enemigosGolpeados = Physics2D.OverlapBoxAll(centro, tamannoCajaAtaqueAire, 0, capaEnemigos);
+
+            if (enemigosGolpeados.Length > 0)
+            {
+                foreach (Collider2D enemigo in enemigosGolpeados)
+                {
+                    MovimientoEnemigo scriptEnemigo = enemigo.GetComponent<MovimientoEnemigo>();
+                    if (scriptEnemigo != null)
+                    {
+                        scriptEnemigo.RecibirDano(2); 
+                    }
+                }
+                danoAireAplicado = true; 
+            }
         }
 
         if (atacandoAire && enSuelo)
         {
             atacandoAire = false;
+            danoAireAplicado = false;
         }
 
     }
@@ -386,6 +422,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
         //Gizmo ataqueNormal
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(transform.position + Vector3.right * direccion * distCajaAtaque, tamannoCajaAtaque);
+        Gizmos.color = Color.white;
+
+        //Gizmo ataqueAire
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position + Vector3.down * distCajaAtaqueAire, tamannoCajaAtaqueAire);
         Gizmos.color = Color.white;
 
     }
