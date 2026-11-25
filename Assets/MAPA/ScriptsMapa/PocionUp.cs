@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class PocionUp : MonoBehaviour
+public class PocionSalto : MonoBehaviour
 {
-    public float multiplicadorSalto = 1.6f; 
-    public float duracionPoder = 10f;       
-    public float tiempoReaparicion = 12f;   
+    public float multiplicadorSalto = 1.6f;
+    public float duracionPoder = 10f;
+    public float tiempoReaparicion = 12f;
 
     SpriteRenderer sprite;
     Collider2D colisionador;
@@ -20,10 +20,10 @@ public class PocionUp : MonoBehaviour
         if (dentro.CompareTag("Player"))
         {
             MovimientoJugPrincipal jugador = dentro.GetComponent<MovimientoJugPrincipal>();
-            if (jugador != null)
-            {
-                jugador.ActivarSuperSalto(multiplicadorSalto, duracionPoder);
-            }
+
+            if (jugador == null || jugador.TieneSuperSalto) return;
+
+            jugador.ActivarSuperSalto(multiplicadorSalto, duracionPoder);
 
             sprite.enabled = false;
             colisionador.enabled = false;

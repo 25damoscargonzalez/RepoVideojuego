@@ -133,5 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe9d056972333ee419a47a9af2d26780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuerzaSuperSalto: 900
-  tiempoReaparicion: 4
+  multiplicadorSalto: 1.6
+  duracionPoder: 5
+  tiempoReaparicion: 10

@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class MovimientoJugPrincipal : MonoBehaviour
 {
@@ -15,6 +16,15 @@ public class MovimientoJugPrincipal : MonoBehaviour
     int vidaActual;
 
     // Power-Up Super Salto
+    [Header("PowerUp")]
+    public GameObject iconoPocionUp;
+    public TextMeshProUGUI textoContadorPocion;
+    public bool TieneSuperSalto { 
+        get { 
+            return superSaltoActivo; 
+        } 
+    }
+
     float fuerzaSaltoOriginal;
     float tiempoSuperSalto;
     bool superSaltoActivo;
@@ -111,10 +121,14 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     public void ActivarSuperSalto(float multiplicador, float duracion)
     {
+        if (superSaltoActivo) return;
+
         fuerzaSalto = fuerzaSaltoOriginal * multiplicador;
         tiempoSuperSalto = duracion;
         superSaltoActivo = true;
-        sprite.color = new Color(0.5f, 0.9f, 1f); 
+        sprite.color = new Color(0.5f, 0.9f, 1f);
+
+        if (iconoPocionUp != null) iconoPocionUp.SetActive(true);
     }
 
     void ControlarSuperSalto()
@@ -122,11 +136,19 @@ public class MovimientoJugPrincipal : MonoBehaviour
         if (superSaltoActivo)
         {
             tiempoSuperSalto -= Time.deltaTime;
+
+            if (textoContadorPocion != null)
+            {
+                textoContadorPocion.text = Mathf.CeilToInt(tiempoSuperSalto).ToString();
+            }
+
             if (tiempoSuperSalto <= 0)
             {
                 fuerzaSalto = fuerzaSaltoOriginal;
                 superSaltoActivo = false;
-                sprite.color = Color.white; 
+                sprite.color = Color.white;
+
+                if (iconoPocionUp != null) iconoPocionUp.SetActive(false);
             }
         }
     }

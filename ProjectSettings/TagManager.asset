@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CamHabitacion
   - CamMapaDia
+  - Caja
   layers:
   - Default
   - TransparentFX
