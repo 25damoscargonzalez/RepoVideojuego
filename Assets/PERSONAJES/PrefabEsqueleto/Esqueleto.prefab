@@ -200,4 +200,8 @@ MonoBehaviour:
   capaJugador:
     serializedVersion: 2
     m_Bits: 128
+  capaSuelo:
+    serializedVersion: 2
+    m_Bits: 64
+  distPared: 0.6
   vidaMaxima: 3

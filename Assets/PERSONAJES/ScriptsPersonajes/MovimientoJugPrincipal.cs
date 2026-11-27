@@ -11,6 +11,11 @@ public class MovimientoJugPrincipal : MonoBehaviour
     public Vector2 tamannoCaja;
     public LayerMask capaSuelo;
 
+    //Camaras
+    [Header("Camaras")]
+    public Camera camHabitacion;
+    public GameObject camMapaDia;
+
     //Puntuacion
     [Header("Puntuacion")]
     public TextMeshProUGUI textoPuntosHUD;
@@ -99,6 +104,17 @@ public class MovimientoJugPrincipal : MonoBehaviour
         ActualizarPuntosUI();
 
         fuerzaSaltoOriginal = fuerzaSalto;
+
+        if (camHabitacion != null)
+        {
+            camHabitacion.gameObject.SetActive(true);
+            camHabitacion.orthographicSize = 3f;
+        }
+
+        if (camMapaDia != null)
+        {
+            camMapaDia.SetActive(false);
+        }
     }
 
     // Update is called once per frame

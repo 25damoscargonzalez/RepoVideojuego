@@ -37,13 +37,16 @@ public class MovimientoEnemigo : MonoBehaviour
 
     void Update()
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
 
         atacando = DetectarJugador() != null;
 
         if (atacando)
         {
-            movX = 0; // Paro el personaje para que ataque
+            movX = 0; //esqueleto quieeto
         }
         else
         {
@@ -60,12 +63,18 @@ public class MovimientoEnemigo : MonoBehaviour
         if (pointTo == 0)
         {
             movX = -1;
-            if (transform.position.x <= posInicialX - distanciaPatrulla) pointTo = 1;
+            if (transform.position.x <= posInicialX - distanciaPatrulla)
+            {
+                pointTo = 1;
+            }
         }
         else
         {
             movX = 1;
-            if (transform.position.x >= posInicialX + distanciaPatrulla) pointTo = 0;
+            if (transform.position.x >= posInicialX + distanciaPatrulla)
+            {
+                pointTo = 0;
+            }
         }
     }
 
@@ -91,7 +100,10 @@ public class MovimientoEnemigo : MonoBehaviour
 
     public void Atacar()
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
 
         Collider2D jugadorDetectado = DetectarJugador();
         if (jugadorDetectado != null)
@@ -105,7 +117,10 @@ public class MovimientoEnemigo : MonoBehaviour
     }
     public void RecibirDano(int cantidad)
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
 
         vidaActual -= cantidad;
         anim.SetTrigger("Hit");
@@ -119,7 +134,10 @@ public class MovimientoEnemigo : MonoBehaviour
 
     public void Morir()
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
         muerto = true;
 
         MovimientoJugPrincipal jugador = FindObjectOfType<MovimientoJugPrincipal>();
@@ -137,7 +155,10 @@ public class MovimientoEnemigo : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
         float velX = atacando ? 0 : movX * velocidad;
         cuerpo.velocity = new Vector2(velX, cuerpo.velocity.y);
     }
