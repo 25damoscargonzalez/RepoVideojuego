@@ -191,14 +191,20 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     public void ActivarSuperSalto(float multiplicador, float duracion)
     {
-        if (superSaltoActivo) return;
+        if (superSaltoActivo)
+        {
+            return;
+        }
 
         fuerzaSalto = fuerzaSaltoOriginal * multiplicador;
         tiempoSuperSalto = duracion;
         superSaltoActivo = true;
         sprite.color = new Color(0.5f, 0.9f, 1f);
 
-        if (iconoPocionUp != null) iconoPocionUp.SetActive(true);
+        if (iconoPocionUp != null)
+        {
+            iconoPocionUp.SetActive(true);
+        }
     }
 
     void ControlarSuperSalto()
@@ -218,7 +224,10 @@ public class MovimientoJugPrincipal : MonoBehaviour
                 superSaltoActivo = false;
                 sprite.color = Color.white;
 
-                if (iconoPocionUp != null) iconoPocionUp.SetActive(false);
+                if (iconoPocionUp != null)
+                {
+                    iconoPocionUp.SetActive(false);
+                }
             }
         }
     }
@@ -362,7 +371,10 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     public void RecibirDano(int cantidad)
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
         vidaActual -= cantidad;
         ActualizarCorazones();
 
@@ -384,7 +396,10 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
     public void Morir()
     {
-        if (muerto) return;
+        if (muerto)
+        {
+            return;
+        }
         muerto = true;
         tiempoMuerte = duracionMuerte;
         movimiento = Vector3.zero;

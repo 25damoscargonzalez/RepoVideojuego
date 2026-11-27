@@ -21,8 +21,15 @@ public class PalancaInteractiva : MonoBehaviour
 
     void ActualizarEstadoPalanca()
     {
-        if (palancaIzq != null) palancaIzq.SetActive(!encendida);
-        if (palancaDer != null) palancaDer.SetActive(encendida);
+        if (palancaIzq != null)
+        {
+            palancaIzq.SetActive(!encendida);
+        }
+
+        if (palancaDer != null)
+        {
+            palancaDer.SetActive(encendida);
+        }
 
         // Si está encendida (derecha), el suelo desaparece ///////////// si está apagada (izquierda), vuelve a aparecer
         if (sueloQueDesaparece != null)

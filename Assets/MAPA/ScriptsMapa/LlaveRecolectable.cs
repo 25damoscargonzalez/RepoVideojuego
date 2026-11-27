@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LlaveRecolectable : MonoBehaviour
 {
-    public GameObject iconoLlave; // Arrastraremos aquí IconoLlaveUI del Canvas
+    public GameObject iconoLlave;
 
     void OnTriggerEnter2D(Collider2D otro)
     {
