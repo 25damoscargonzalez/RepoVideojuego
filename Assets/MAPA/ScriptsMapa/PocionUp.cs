@@ -21,9 +21,10 @@ public class PocionSalto : MonoBehaviour
         {
             MovimientoJugPrincipal jugador = dentro.GetComponent<MovimientoJugPrincipal>();
 
-            if (jugador == null || jugador.TieneSuperSalto) return;
+            if (jugador == null || jugador.TieneSuperSalto()) return;
 
             jugador.ActivarSuperSalto(multiplicadorSalto, duracionPoder);
+            jugador.SumarPuntos(15);
 
             sprite.enabled = false;
             colisionador.enabled = false;

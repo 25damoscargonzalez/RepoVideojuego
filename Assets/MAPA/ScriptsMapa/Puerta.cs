@@ -3,20 +3,23 @@ using UnityEngine;
 public class Puerta : MonoBehaviour
 {
     [Header("Destino")]
-    public Transform puntoAparicion;      // dónde aparece el jugador al llegar a ESTA puerta
-    public Puerta puertaDestino;          // la puerta a la que lleva esta
+    public Transform puntoAparicion;
+    public Puerta puertaDestino;
 
     [Header("Cámaras")]
-    public GameObject camaraZona;         // Virtual Camera de la zona donde está esta puerta
+    public GameObject camaraZona;
 
     [Header("Opcional")]
-    public GameObject aviso;              // texto "W"
+    public GameObject aviso;
 
     Transform jugador;
 
     void Start()
     {
-        if (aviso != null) aviso.SetActive(false);
+        if (aviso != null)
+        {
+            aviso.SetActive(false);
+        }
     }
 
     void Update()
@@ -30,14 +33,20 @@ public class Puerta : MonoBehaviour
     void Teletransportar()
     {
         Rigidbody2D rb = jugador.GetComponent<Rigidbody2D>();
-        if (rb != null) rb.velocity = Vector2.zero;
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+        }
 
         jugador.position = puertaDestino.puntoAparicion.position;
 
         camaraZona.SetActive(false);
         puertaDestino.camaraZona.SetActive(true);
 
-        if (aviso != null) aviso.SetActive(false);
+        if (aviso != null)
+        {
+            aviso.SetActive(false);
+        }
         jugador = null;
     }
 
@@ -46,7 +55,10 @@ public class Puerta : MonoBehaviour
         if (dentro.CompareTag("Player"))
         {
             jugador = dentro.transform;
-            if (aviso != null) aviso.SetActive(true);
+            if (aviso != null)
+            {
+                aviso.SetActive(true);
+            }
         }
     }
 
@@ -55,7 +67,11 @@ public class Puerta : MonoBehaviour
         if (dentro.CompareTag("Player"))
         {
             jugador = null;
-            if (aviso != null) aviso.SetActive(false);
+            if (aviso != null)
+            {
+                aviso.SetActive(false);
+            }
+
         }
     }
 }

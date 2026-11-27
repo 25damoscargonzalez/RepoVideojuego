@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class MovimientoJugPrincipal : MonoBehaviour
 {
@@ -9,25 +11,31 @@ public class MovimientoJugPrincipal : MonoBehaviour
     public Vector2 tamannoCaja;
     public LayerMask capaSuelo;
 
-    // Vida y corazones UI
+    //Puntuacion
+    [Header("Puntuacion")]
+    public TextMeshProUGUI textoPuntosHUD;
+    public TextMeshProUGUI textoPuntosVictoria;
+    public TextMeshProUGUI textoPuntosDerrota;
+    int puntosActuales = 0;
+
+    //Vida y corazones UI
     [Header("Vida")]
     public int vidaMaxima = 3;
     public GameObject[] corazones;
     int vidaActual;
 
-    // Power-Up Super Salto
+    //Power-Up Super Salto
     [Header("PowerUp")]
     public GameObject iconoPocionUp;
     public TextMeshProUGUI textoContadorPocion;
-    public bool TieneSuperSalto { 
-        get { 
-            return superSaltoActivo; 
-        } 
-    }
 
     float fuerzaSaltoOriginal;
     float tiempoSuperSalto;
     bool superSaltoActivo;
+
+    //Llave
+    [Header("Inventario")]
+    public bool tieneLlave = false;
 
     //LeerMovimiento
     [Header("LeerMovimiento")]
@@ -36,12 +44,12 @@ public class MovimientoJugPrincipal : MonoBehaviour
     Rigidbody2D cuerpo;
     SpriteRenderer sprite;
     Animator anim;
-    float direccion = 1;   // 1 = derecha, -1 = izquierda
+    float direccion = 1; // 1 = derecha, -1 = izquierda
 
-    // LeerSalto()
+    //LeerSalto()
     bool saltando;
 
-    // AtacandoNormal()
+    //AtacandoNormal()
     [Header("AtacandoNormal")]
     public float duracionAtaque = 0.3f;
     public float distCajaAtaque = 0.8f;
@@ -52,7 +60,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     float tiempoAtaque;
     bool enSuelo;
 
-    // AtacandoPorAire()
+    //AtacandoPorAire()
     [Header("AtacandoPorAire")]
     public float fuerzaCaida = 10f;
     public float distCajaAtaqueAire = 0.8f;
@@ -61,7 +69,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
     bool atacandoAire;
     bool danoAireAplicado;
 
-    // Deslizando()
+    //Deslizando()
     [Header("Deslizando")]
     public float duracionDeslizando = 0.4f;
     public float fuerzaDeslizando = 10f;
@@ -69,11 +77,10 @@ public class MovimientoJugPrincipal : MonoBehaviour
     float tiempoDeslizando;
     bool deslizando;
 
-    // Morir()
+    //Morir()
     [Header("Morir")]
-    public Transform puntoReaparicion;
-    public GameObject camaraMapa;
-    public GameObject camaraHabitacion;
+    public GameObject canvasDerrota;
+    public GameObject canvasHUD;
     public float duracionMuerte = 1f;
 
     float tiempoMuerte;
@@ -89,6 +96,7 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
         vidaActual = vidaMaxima;
         ActualizarCorazones();
+        ActualizarPuntosUI();
 
         fuerzaSaltoOriginal = fuerzaSalto;
     }
@@ -101,7 +109,20 @@ public class MovimientoJugPrincipal : MonoBehaviour
             tiempoMuerte -= Time.deltaTime;
             if (tiempoMuerte <= 0)
             {
-                Reaparecer();
+                if (canvasDerrota != null)
+                {
+                    canvasDerrota.SetActive(true);
+                }
+
+                if (canvasHUD != null)
+                {
+                    canvasHUD.SetActive(false);
+                }
+
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                }
             }
 
             ActualizarAnim();
@@ -120,6 +141,36 @@ public class MovimientoJugPrincipal : MonoBehaviour
 
         ActualizarAnim();
 
+    }
+
+    public void SumarPuntos(int cantidad)
+    {
+        puntosActuales += cantidad;
+        ActualizarPuntosUI();
+    }
+
+    void ActualizarPuntosUI()
+    {
+        if (textoPuntosHUD != null)
+        {
+            textoPuntosHUD.text = "Puntos: " + puntosActuales;
+        }
+
+        if (textoPuntosVictoria != null)
+        {
+            textoPuntosVictoria.text = puntosActuales.ToString();
+        }
+
+        if (textoPuntosDerrota != null)
+        {
+            textoPuntosDerrota.text = puntosActuales.ToString();
+        }
+    }
+
+
+    public bool TieneSuperSalto()
+    {
+        return superSaltoActivo;
     }
 
     public void ActivarSuperSalto(float multiplicador, float duracion)
@@ -323,24 +374,6 @@ public class MovimientoJugPrincipal : MonoBehaviour
         movimiento = Vector3.zero;
         cuerpo.velocity = Vector2.zero;
         anim.SetBool("Muerto", true);
-    }
-
-    void Reaparecer()
-    {
-        transform.position = puntoReaparicion.position;
-        cuerpo.velocity = Vector2.zero;
-
-        camaraMapa.SetActive(false);
-        camaraHabitacion.SetActive(true);
-
-        atacando = false;
-        atacandoAire = false;
-        deslizando = false;
-        vidaActual = vidaMaxima;
-        ActualizarCorazones();
-
-        anim.SetBool("Muerto", false);
-        muerto = false;
     }
 
     bool EstaEnElSuelo()

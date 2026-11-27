@@ -121,6 +121,13 @@ public class MovimientoEnemigo : MonoBehaviour
     {
         if (muerto) return;
         muerto = true;
+
+        MovimientoJugPrincipal jugador = FindObjectOfType<MovimientoJugPrincipal>();
+        if (jugador != null)
+        {
+            jugador.SumarPuntos(100);
+        }
+
         cuerpo.velocity = Vector2.zero;
         anim.SetBool("Muere", true);
         GetComponent<Collider2D>().enabled = false;

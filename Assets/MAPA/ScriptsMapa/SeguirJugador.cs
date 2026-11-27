@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class SeguirJugador : MonoBehaviour
 {
-    public Transform jugador;          // arrastra PersonajePrincipal
-    public float suavizado = 5f;       // más alto = más pegada al personaje
+    public Transform jugador;
+    public float suavizado = 5f;
     public Vector2 desplazamiento = new Vector2(0, 1f);
 
     // Start is called before the first frame update
